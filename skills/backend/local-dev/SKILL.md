@@ -23,7 +23,8 @@ Everything runs in `docker compose`; the app runs on the host (`npm run start:de
 | lgtm       | grafana/otel-lgtm (profile `observability`) | 4320 (OTLP) / 3003 (UI) | local Grafana+Loki+Tempo+Prometheus                     |
 
 Ports are Vera's own on purpose, so the stack can run next to other projects' compose stacks on the same
-machine (the defaults 5432, 7000–7005, 4566, 1025/8025, 3001/4318 and other offset ranges are taken). The API itself listens on 3333.
+machine. The defaults (5432, 7000–7005, 4566, 1025/8025, 3001/4318) and the previous offset
+(5436, 7100–7105, 4576, 1026/8026, 4319/3002) may already be taken by other projects. The API itself listens on 3333.
 
 - **Mailpit, not Mailhog** (Mailhog is unmaintained). MailPort's SMTP driver points at 1027; every
   email the app sends appears at `localhost:8027` — also queryable via REST API in E2E tests.
