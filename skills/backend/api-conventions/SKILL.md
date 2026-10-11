@@ -67,8 +67,8 @@ fallback pt-BR. Consequences:
 
 Rules:
 
-- HTTP errors: **problem+json shape** — `{ type, title, status, detail, requestId, meta? }`
-  . `requestId` ALWAYS present (support can find the Loki
+- HTTP errors: **problem+json shape** — `{ type, title, status, detail, requestId, meta? }`.
+  `requestId` ALWAYS present (support can find the Loki
   trail from a screenshot). `type` IS the error code (`connections.connection_not_found`) — the stable,
   language-independent identifier the frontend translates; there is no separate `code` field; `detail` is a TECHNICAL
   description in English (for logs/support/API consumers), never UI copy — nobody renders `detail`
