@@ -84,8 +84,8 @@ A action aceita `workflow_dispatch` com `repos` (lista separada por vírgula, ou
 
 ## Workflows
 
-| Workflow        | Trigger                                                           | O que faz                                        |
-| --------------- | ----------------------------------------------------------------- | ------------------------------------------------ |
+| Workflow        | Trigger                                                                          | O que faz                                        |
+| --------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
 | **Sync Skills** | Manual (`workflow_dispatch`), atrás de `vars.SKILLS_SYNC_ENABLED` (ou `dry_run`) | Sincroniza `.claude/skills/` nos repos do config |
 
 ## Issue templates
