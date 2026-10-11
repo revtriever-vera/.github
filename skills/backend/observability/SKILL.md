@@ -41,9 +41,21 @@ Every log line carries (automatically, via logger context — not hand-passed):
 | ------------ | ----------------------- | -------------------------------- |
 | `requestId`  | AsyncLocalStorage       | always                           |
 | `companyId`  | AsyncLocalStorage       | whenever a tenant is in scope    |
-| `identifier` | LOG_IDENTIFIER constant | always                           |
-| `traceId`    | OTel context            | injected by pino instrumentation |
-| `meta`       | call site               | structured payload, see below    |
+| `identifier`               | LOG_IDENTIFIER constant                                                        | always                                                              |
+| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `meta`                     | call site                                                                      | structured payload, see below                                       |
+| `fixed-income-title`       | Fixed income title changed (created, updated, removed)                         | `action`, `titleId`, `kind`, `indexer`                              |
+| `fixed-income-index-sync`  | Index series (CDI, IPCA) sync requested, synced or failed                      | `series`, `from`, `to`, `points`, `windows`                         |
+| `fixed-income-valuation`   | Valuation skipped because index data does not cover the titles                 | `status`, `titles`, `seriesLastDate`                                |
+| `market-data-sweep`        | Quote sweep finished, group without provider, invalid payload                  | `held`, `chunks`, `group`, `type`                                   |
+| `market-data-chunk`        | One provider chunk finished (requested, stored, failed)                        | `provider`, `requested`, `stored`, `failed`                         |
+| `market-data-provider`     | Quote provider failure (neutral reason code, never the provider body)          | `provider`, `stage`, `reason`                                       |
+| `market-data-fx`           | Exchange rate (PTAX) stored, missing or failed                                 | `currency`, `date`, `source`                                        |
+| `market-data-budget`       | Provider call budget refused a reservation                                     | `provider`, `calls`                                                 |
+| `portfolio-snapshot`       | Portfolio snapshot built                                                       | `holdings`, `classes`, `missingQuotes`, `staleQuotes`, `durationMs` |
+| `portfolio-orphan-holding` | Holding with no asset class assignment (data bug)                              | `subjectType`, `subjectId`                                          |
+| `portfolio-export`         | Portfolio export generated                                                     | `format`, `rows`, `durationMs`                                      |
+| `contribution-suggest`     | Contribution suggestion computed, or refused because class targets are not set | `classesFunded`, `assetsFunded`, `warnings`, `result`               |
 
 ### LOG_IDENTIFIER
 
