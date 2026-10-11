@@ -4,7 +4,7 @@ description: >
   Reviews a pull request against the invariants written in this repository's skills. Use when asked
   to review a PR or review code, or when the review action fires. Triggers on: "revisar PR",
   "review", "code review", "revisão de código".
-argument-hint: '[pr-number]'
+argument-hint: "[pr-number]"
 allowed-tools:
   - Read
   - Grep

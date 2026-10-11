@@ -21,14 +21,14 @@ The split is by **audience**, not by file type. How we build it is English; what
 chose it is pt-BR — **except the end-user interface, which is i18n from day one** (see "Interface
 text is never pt-BR fixed" below).
 
-| English                                             | pt-BR                                             |
-| --------------------------------------------------- | ------------------------------------------------- |
-| Code: identifiers, types, file names                | Business rules (`docs/regras/`)                   |
+| English                                               | pt-BR                                             |
+| ----------------------------------------------------- | ------------------------------------------------- |
+| Code: identifiers, types, file names                  | Business rules (`docs/regras/`)                   |
 | Routes and URLs (`/accounts`, `/transactions/import`) | Product decisions (`docs/<contexto>.md`)          |
-| Log messages and `LOG_IDENTIFIER`                   | Commits, issues, PR descriptions                  |
-| Error **codes** (`identity.invalid_email_otp`)      | Conversation, docs, anything internal to the team |
-| Skills (`.claude/skills/`)                          | —                                                 |
-| Design docs (`docs/identity.md`)                    | —                                                 |
+| Log messages and `LOG_IDENTIFIER`                     | Commits, issues, PR descriptions                  |
+| Error **codes** (`identity.invalid_email_otp`)        | Conversation, docs, anything internal to the team |
+| Skills (`.claude/skills/`)                            | —                                                 |
+| Design docs (`docs/identity.md`)                      | —                                                 |
 
 Interface labels and error messages a user actually reads are **not** in this
 table — they are translation keys (i18next), never pt-BR (or any other language) hard-coded
@@ -116,7 +116,7 @@ config, not a difference of opinion.
   accessibility. Also on: `prefer-readonly`, `no-import-type-side-effects`.
 - Small units enforced: `complexity: 10`, `max-params: 8` and **`max-lines-per-function: 40` in every
   repo, front included** (a component that grows past it is split into subcomponents and hooks, never
-  granted more room). `max-depth` differs: `2` in the API, `3` in the front. 
+  granted more room). `max-depth` differs: `2` in the API, `3` in the front.
 - **Three local rules, in every repo** (`eslint-rules/index.mjs`): `local/no-comments` (only
   directives and JSDoc pass — see Comments), `local/no-else` (handle the exit case first and return; the
   normal path stays at the outer level), `local/no-search-in-loop` (no `find`/`includes`/`filter`
@@ -128,7 +128,7 @@ config, not a difference of opinion.
   second look.
 - **No `any`** — `unknown` + narrowing. An `as` cast is replaced by a type guard.
 - **No default exports. No barrel files** (`index.ts` re-exports) — they breed circular imports;
-  import from the concrete file. 
+  import from the concrete file.
 - File names kebab-case with the framework's suffixes: `invite.application.ts`,
   `users.repository.ts`, `use-team-members.query.ts`, `member-card.tsx`.
 - Enums: `as const` object + union type, or plain string unions — never TS `enum`.
@@ -139,13 +139,13 @@ config, not a difference of opinion.
 declaration is the source of a derived type, and annotating it destroys the derivation.** Anything
 that fails that test is not exempt — annotate it.
 
-| Exempt                          | What breaks if you annotate                                                                      |
-| ------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `*.schema.ts` / `*.schemas.ts`  | `z.infer<typeof schema>` collapses to the annotation                                             |
-| `types.ts` / `*.types.ts`       | `as const` maps lose the literal union (`(typeof THEMES)[keyof typeof THEMES]`)                  |
-| `shared/config/*.ts`            | the config object IS the shape everything else reads                                             |
-| `routes/**/*.tsx` (FE)          | TanStack Router derives the route tree from the inferred `Route`                                 |
-| `main.tsx` (FE)                 | `Register { router: typeof router }` — annotating `createRouter(...)` kills path typing app-wide |
+| Exempt                         | What breaks if you annotate                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `*.schema.ts` / `*.schemas.ts` | `z.infer<typeof schema>` collapses to the annotation                                             |
+| `types.ts` / `*.types.ts`      | `as const` maps lose the literal union (`(typeof THEMES)[keyof typeof THEMES]`)                  |
+| `shared/config/*.ts`           | the config object IS the shape everything else reads                                             |
+| `routes/**/*.tsx` (FE)         | TanStack Router derives the route tree from the inferred `Route`                                 |
+| `main.tsx` (FE)                | `Register { router: typeof router }` — annotating `createRouter(...)` kills path typing app-wide |
 
 Query-key factories (`features/*/api/*-keys.ts`) are **not** exempt in `vera-fe`: they are annotated
 with an explicit tuple type (see the `data-fetching` skill).

@@ -5,7 +5,7 @@ description: >
   case in the browser and the CLI, and reports the round on the QA issue. Use when a milestone is
   finished and the team asks for the manual validation round. Triggers on: "rodar QA", "QA da
   milestone", "validação manual", "handoff de QA", "rodar os casos de teste".
-argument-hint: '[milestone-slug]'
+argument-hint: "[milestone-slug]"
 effort: high
 ---
 
