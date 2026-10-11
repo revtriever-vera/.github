@@ -6,8 +6,8 @@ O repositório é **público**, como toda a organização: nada aqui pode conter
 
 ## Antes de usar
 
-- **Sync de skills desligada até o dono configurar o acesso.** O workflow `sync-skills.yml` só roda por `workflow_dispatch` e o job de sync fica atrás de `vars.SKILLS_SYNC_ENABLED == 'true'`. Sem a variável, o workflow termina com um aviso explícito (job `disabled`) e não sincroniza nada. Até lá, copie `skills/<grupo>/*` à mão para `.claude/skills/` em `vera-api`/`vera-fe`.
-- **Secret `GH_TOKEN`:** fine-grained PAT com `Contents: Read and write` em `vera-api` e `vera-fe` (nada além disso). Sem ele, a execução real da sync falha com uma anotação de erro clara por repositório; o `dry_run` funciona sem o secret. O cadastro do secret e da variável é o card revtriever-vera/vera#31. O PAT expira sem aviso: anote a data de expiração.
+- **Sync de skills desligada até o dono configurar o acesso.** O workflow `sync-skills.yml` só roda por `workflow_dispatch` e o job de sync roda quando `vars.SKILLS_SYNC_ENABLED == 'true'` ou quando a execução manual marca `dry_run`. Sem a variável e sem `dry_run`, o workflow termina com um aviso explícito (job `disabled`) e não sincroniza nada. Até lá, copie `skills/<grupo>/*` à mão para `.claude/skills/` em `vera-api`/`vera-fe`.
+- **Secret `GH_TOKEN`:** fine-grained PAT com `Contents: Read and write` em `vera-api` e `vera-fe` (nada além disso). Sem ele, a execução real da sync falha com uma anotação de erro clara por repositório; o `dry_run` funciona sem o secret e sem a variável `SKILLS_SYNC_ENABLED`. O cadastro do secret e da variável é o card revtriever-vera/vera#31. O PAT expira sem aviso: anote a data de expiração.
 - **Runner:** o workflow roda em `ubuntu-latest`.
 
 ```
@@ -80,13 +80,13 @@ Se um repositório precisa de uma skill só dele, declare em `keep` no `sync-con
 
 ### Execução manual
 
-A action aceita `workflow_dispatch` com `repos` (lista separada por vírgula, ou `all`) e `dry_run`. Simule sempre com `dry_run: true` primeiro: ela só imprime `<repo> ← [<grupos>]`, sem clonar nem dar push. Os repositórios destino precisam aceitar push direto na `main` pelo bot; se um ruleset bloquear, a sync falha com `push bloqueado` no log.
+A action aceita `workflow_dispatch` com `repos` (lista separada por vírgula, ou `all`) e `dry_run`. Simule sempre com `dry_run: true` primeiro: ela só imprime `<repo> ← [<grupos>]`, sem clonar nem dar push, mesmo com `SKILLS_SYNC_ENABLED` desligada. Execuções da sync são serializadas (`concurrency: sync-skills`, sem cancelar a que está em andamento). O token do PAT vai ao `git` por `http.extraheader` e nunca é gravado na URL nem em `.git/config` dos destinos. Na execução real, para o `vera-api`, a sync compara as portas da skill `backend/local-dev` com o `docker-compose.yml` e emite um `::warning` se divergirem (não falha). Os repositórios destino precisam aceitar push direto na `main` pelo bot; se um ruleset bloquear, a sync falha com `push bloqueado` no log.
 
 ## Workflows
 
 | Workflow        | Trigger                                                           | O que faz                                        |
 | --------------- | ----------------------------------------------------------------- | ------------------------------------------------ |
-| **Sync Skills** | Manual (`workflow_dispatch`), atrás de `vars.SKILLS_SYNC_ENABLED` | Sincroniza `.claude/skills/` nos repos do config |
+| **Sync Skills** | Manual (`workflow_dispatch`), atrás de `vars.SKILLS_SYNC_ENABLED` (ou `dry_run`) | Sincroniza `.claude/skills/` nos repos do config |
 
 ## Issue templates
 
