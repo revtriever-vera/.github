@@ -41,21 +41,9 @@ Every log line carries (automatically, via logger context — not hand-passed):
 | ------------ | ----------------------- | -------------------------------- |
 | `requestId`  | AsyncLocalStorage       | always                           |
 | `companyId`  | AsyncLocalStorage       | whenever a tenant is in scope    |
-| `identifier`               | LOG_IDENTIFIER constant                                                        | always                                                              |
-| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `meta`                     | call site                                                                      | structured payload, see below                                       |
-| `fixed-income-title`       | Fixed income title changed (created, updated, removed)                         | `action`, `titleId`, `kind`, `indexer`                              |
-| `fixed-income-index-sync`  | Index series (CDI, IPCA) sync requested, synced or failed                      | `series`, `from`, `to`, `points`, `windows`                         |
-| `fixed-income-valuation`   | Valuation skipped because index data does not cover the titles                 | `status`, `titles`, `seriesLastDate`                                |
-| `market-data-sweep`        | Quote sweep finished, group without provider, invalid payload                  | `held`, `chunks`, `group`, `type`                                   |
-| `market-data-chunk`        | One provider chunk finished (requested, stored, failed)                        | `provider`, `requested`, `stored`, `failed`                         |
-| `market-data-provider`     | Quote provider failure (neutral reason code, never the provider body)          | `provider`, `stage`, `reason`                                       |
-| `market-data-fx`           | Exchange rate (PTAX) stored, missing or failed                                 | `currency`, `date`, `source`                                        |
-| `market-data-budget`       | Provider call budget refused a reservation                                     | `provider`, `calls`                                                 |
-| `portfolio-snapshot`       | Portfolio snapshot built                                                       | `holdings`, `classes`, `missingQuotes`, `staleQuotes`, `durationMs` |
-| `portfolio-orphan-holding` | Holding with no asset class assignment (data bug)                              | `subjectType`, `subjectId`                                          |
-| `portfolio-export`         | Portfolio export generated                                                     | `format`, `rows`, `durationMs`                                      |
-| `contribution-suggest`     | Contribution suggestion computed, or refused because class targets are not set | `classesFunded`, `assetsFunded`, `warnings`, `result`               |
+| `identifier` | LOG_IDENTIFIER constant | always                           |
+| `traceId`    | OTel context            | injected by pino instrumentation |
+| `meta`       | call site               | structured payload, see below    |
 
 ### LOG_IDENTIFIER
 
@@ -116,19 +104,31 @@ Where a field lands decides what it costs. Loki bills by stream: every distinct 
 What exists to search on, by `identifier`. Adding an identifier or a `meta` key means updating this
 table — same rule as renaming one.
 
-| `identifier`                  | Covers                                                                 | Distinctive `meta` keys                                                   |
-| ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `identity-auth`               | Social login (Google, Facebook), session lifecycle                     | `userId`                                                                  |
-| `auth-refresh-reuse`          | Refresh token reuse — family revoked                                   | `familyId`, `revokedSessions`, `userId`                                   |
-| `identity-company-onboarding` | Company creation (first login → company)                               | `companyId`, `ownerUserId`                                                |
-| `onboarding-step`             | Wizard step completed/skipped, activation gate                         | `companyId`, `step`                                                       |
-| `queue-consumer`              | Worker startup, enqueue failure, missing handler                       | `queue`, `type`, `detail`                                                 |
-| `email-send`                  | Delivery                                                               | `template`                                                                |
-| `email-feedback`              | SES feedback: stored, suppressed, unroutable, failed                   | `type`, `eventType`, `providerMessageId`, `messageId`, `reason`, `detail` |
-| `http-error`                  | Unhandled exceptions, untranslated error codes                         | `code`, `err`                                                             |
-| `catalog-sync`                | Catalog sync round per source (fetched, upserted, delisted, status)    | `source`, `fetched`, `upserted`, `delisted`, `status`                     |
-| `catalog-source`              | Catalog provider failure (neutral error code, never the provider body) | `source`, `errorCode`                                                     |
-| `catalog-search`              | Catalog search errors only                                             | —                                                                         |
+| `identifier`                  | Covers                                                                         | Distinctive `meta` keys                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `identity-auth`               | Social login (Google, Facebook), session lifecycle                             | `userId`                                                                  |
+| `auth-refresh-reuse`          | Refresh token reuse — family revoked                                           | `familyId`, `revokedSessions`, `userId`                                   |
+| `identity-company-onboarding` | Company creation (first login → company)                                       | `companyId`, `ownerUserId`                                                |
+| `onboarding-step`             | Wizard step completed/skipped, activation gate                                 | `companyId`, `step`                                                       |
+| `queue-consumer`              | Worker startup, enqueue failure, missing handler                               | `queue`, `type`, `detail`                                                 |
+| `email-send`                  | Delivery                                                                       | `template`                                                                |
+| `email-feedback`              | SES feedback: stored, suppressed, unroutable, failed                           | `type`, `eventType`, `providerMessageId`, `messageId`, `reason`, `detail` |
+| `http-error`                  | Unhandled exceptions, untranslated error codes                                 | `code`, `err`                                                             |
+| `catalog-sync`                | Catalog sync round per source (fetched, upserted, delisted, status)            | `source`, `fetched`, `upserted`, `delisted`, `status`                     |
+| `catalog-source`              | Catalog provider failure (neutral error code, never the provider body)         | `source`, `errorCode`                                                     |
+| `catalog-search`              | Catalog search errors only                                                     | —                                                                         |
+| `fixed-income-title`          | Fixed income title changed (created, updated, removed)                         | `action`, `titleId`, `kind`, `indexer`                                    |
+| `fixed-income-index-sync`     | Index series (CDI, IPCA) sync requested, synced or failed                      | `series`, `from`, `to`, `points`, `windows`                               |
+| `fixed-income-valuation`      | Valuation skipped because index data does not cover the titles                 | `status`, `titles`, `seriesLastDate`                                      |
+| `market-data-sweep`           | Quote sweep finished, group without provider, invalid payload                  | `held`, `chunks`, `group`, `type`                                         |
+| `market-data-chunk`           | One provider chunk finished (requested, stored, failed)                        | `provider`, `requested`, `stored`, `failed`                               |
+| `market-data-provider`        | Quote provider failure (neutral reason code, never the provider body)          | `provider`, `stage`, `reason`                                             |
+| `market-data-fx`              | Exchange rate (PTAX) stored, missing or failed                                 | `currency`, `date`, `source`                                              |
+| `market-data-budget`          | Provider call budget refused a reservation                                     | `provider`, `calls`                                                       |
+| `portfolio-snapshot`          | Portfolio snapshot built                                                       | `holdings`, `classes`, `missingQuotes`, `staleQuotes`, `durationMs`       |
+| `portfolio-orphan-holding`    | Holding with no asset class assignment (data bug)                              | `subjectType`, `subjectId`                                                |
+| `portfolio-export`            | Portfolio export generated                                                     | `format`, `rows`, `durationMs`                                            |
+| `contribution-suggest`        | Contribution suggestion computed, or refused because class targets are not set | `classesFunded`, `assetsFunded`, `warnings`, `result`                     |
 
 `message` is static by rule, so it is a reliable filter — but it travels as the **log line**, not as
 structured metadata, so the filter is the line filter: ``|= `import failed` `` works
