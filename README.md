@@ -40,7 +40,18 @@ skills/
 ├── shared/                          # todos os repos recebem
 │   ├── conventions/SKILL.md         # idioma, vocabulário, tipagem, lint, git, i18n, repositório público
 │   ├── pr-review/SKILL.md           # como revisar um PR
-│   └── qa-run/SKILL.md              # como executar o roteiro de QA de uma milestone
+│   ├── qa-run/SKILL.md              # como executar o roteiro de QA de uma milestone
+│   ├── planning/                    # plano antes do código: milestone, PRD, cards, roteiro de QA
+│   ├── grilling/                    # entrevista de uma pergunta por vez até fechar a decisão
+│   ├── product-ux-framing/          # enquadrar o problema de produto e de UX antes de desenhar
+│   ├── interaction-design/          # princípios e rubrica de design de interação
+│   ├── prototype/                   # protótipo descartável para responder uma dúvida
+│   ├── diagnosing-bugs/             # disciplina para bugs difíceis
+│   ├── prod-check/                  # conferir se o deploy chegou e o que ele faz em produção
+│   ├── retro/                       # transformar um problema da entrega em uma mudança proposta
+│   ├── to-questionnaire/            # questionário para quem decide fora da conversa
+│   ├── wait-what/                   # explicar de novo, em linguagem simples, quando a pessoa se perdeu
+│   └── writing-for-agents/          # escrever skills e AGENTS.md
 ├── backend/                         # repos NestJS
 │   ├── api-conventions/SKILL.md     # DTO/zod, OpenAPI, controller, contrato de erro
 │   ├── architecture/SKILL.md        # camadas, ports, injeção
@@ -48,15 +59,27 @@ skills/
 │   ├── data-access/SKILL.md         # Kysely, tenant (companyId), migrations
 │   ├── infrastructure/SKILL.md      # CDK, ambientes dev/prod, CI/CD
 │   ├── local-dev/SKILL.md
+│   ├── no-polling/SKILL.md          # trabalho disparado por fato ou prazo, nunca por varredura
 │   ├── observability/SKILL.md       # pino, OTel, requestId
 │   ├── queues-and-scheduling/SKILL.md
 │   └── testing/SKILL.md
-└── frontend/                        # repos React
-    ├── data-fetching/SKILL.md
-    ├── forms/SKILL.md
-    ├── frontend-architecture/SKILL.md
-    ├── testing/SKILL.md
-    └── ui-and-styling/SKILL.md      # design system e i18n (pt-BR e en)
+├── frontend/                        # repos React
+│   ├── data-fetching/SKILL.md
+│   ├── forms/SKILL.md
+│   ├── frontend-architecture/SKILL.md
+│   ├── testing/SKILL.md
+│   └── ui-and-styling/SKILL.md      # design system e i18n (pt-BR e en)
+├── interface/                       # só o front recebe: qualidade de interface (web)
+│   ├── better-accessibility/        # WCAG 2.2, teclado, leitor de tela
+│   ├── better-colors/               # paleta, contraste, tokens
+│   ├── better-interface/            # revisão de interface de ponta a ponta
+│   ├── better-layout/               # espaçamento, alinhamento, adaptação
+│   ├── better-motion/               # animação e transições
+│   ├── better-typography/           # fontes, espaçamento e tamanho de texto
+│   ├── better-ui/                   # ícones, superfícies, detalhes de UI
+│   ├── better-writing/              # textos de interface
+│   └── interface-review/            # revisa o diff de uma mudança de interface
+└── LICENSE-*                        # licenças MIT das skills adaptadas de terceiros
 ```
 
 ### Mapeamento por grupo
@@ -64,7 +87,7 @@ skills/
 | Grupo        | Pastas recebidas      | Repositórios |
 | ------------ | --------------------- | ------------ |
 | **backend**  | `shared` + `backend`  | `vera-api`   |
-| **frontend** | `shared` + `frontend` | `vera-fe`    |
+| **frontend** | `shared` + `frontend` + `interface` | `vera-fe`    |
 
 `vera-observability` não recebe skills (repositório sem aplicação rodando). Para adicionar repositórios ou grupos, edite `skills/sync-config.json`.
 

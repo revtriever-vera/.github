@@ -6,7 +6,7 @@
             "repos": ["vera-api"]
         },
         "frontend": {
-            "folders": ["shared", "frontend"],
+            "folders": ["shared", "frontend", "interface"],
             "repos": ["vera-fe"]
         }
     },

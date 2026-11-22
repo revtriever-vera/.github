@@ -135,3 +135,12 @@ is justified in the PR description (no code comment, not even here).
 - Repositories and domains import from that model file, never from the generated one. Concrete
   create/update inputs stay as `Pick<NewUser, 'email' | 'name'>`.
 - Derived/domain types (status unions, value objects) live next to them in the same file.
+
+## Gotchas
+
+- **A data migration runs while the old version still writes.** `migrate` runs before the deploy
+  swaps the tasks, so old workers keep creating the rows a one-shot `UPDATE` just cleaned. Make the
+  new code ignore those rows on read too, not only the migration.
+- **A read behind a screen is bounded by what it was asked for.** Loads for a screen batch by the
+  requested ids: one query per batch, scoped to those ids, never "everything of the company, then
+  filter in memory".
