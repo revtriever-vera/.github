@@ -31,3 +31,4 @@ Tell the person, in their terms, whether it is published, since when, and whethe
 - In Loki, `service_version` is not an index label: filter it after the pipe, as the script does.
 - A Loki window longer than seven days times out. For a long window, use the database.
 - A question the script does not answer, and that will be asked again, becomes a new query in the script, by PR. An improvised query gives a number nobody can compare.
+- The script was written against the telemetry labels used by `observability` (`service_name`, `service_version`, `deployment_environment_name`). The first time it runs after a real deploy, confirm those labels match and fix the script by PR if they do not.
