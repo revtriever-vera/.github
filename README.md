@@ -84,9 +84,9 @@ skills/
 
 ### Mapeamento por grupo
 
-| Grupo        | Pastas recebidas      | Repositórios |
-| ------------ | --------------------- | ------------ |
-| **backend**  | `shared` + `backend`  | `vera-api`   |
+| Grupo        | Pastas recebidas                    | Repositórios |
+| ------------ | ----------------------------------- | ------------ |
+| **backend**  | `shared` + `backend`                | `vera-api`   |
 | **frontend** | `shared` + `frontend` + `interface` | `vera-fe`    |
 
 `vera-observability` não recebe skills (repositório sem aplicação rodando). Para adicionar repositórios ou grupos, edite `skills/sync-config.json`.

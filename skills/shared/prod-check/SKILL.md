@@ -27,7 +27,7 @@ Tell the person, in their terms, whether it is published, since when, and whethe
 
 ## Gotchas
 
-- `service_version` is the first seven characters of the commit.
+- `service_version` starts with the first seven characters of the commit (the script matches by prefix, so a full SHA also works).
 - In Loki, `service_version` is not an index label: filter it after the pipe, as the script does.
 - A Loki window longer than seven days times out. For a long window, use the database.
 - A question the script does not answer, and that will be asked again, becomes a new query in the script, by PR. An improvised query gives a number nobody can compare.

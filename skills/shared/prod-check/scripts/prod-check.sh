@@ -45,7 +45,7 @@ loki() { grafana "/api/datasources/proxy/uid/$LOKI/loki/api/v1/query" --data-url
 echo "== versão que está atendendo (requisições por segundo, últimos 10 min)"
 SERVING="$(prom "sum by (service_name, service_version) (rate(http_server_request_duration_seconds_count{service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\"}[10m]))")"
 jq -r '.data.result[] | "\(.metric.service_name) \(.metric.service_version): \(.value[1] | tonumber | . * 100 | round / 100)"' <<<"$SERVING" | sort
-LIVE="$(jq -r --arg v "$SHORT" '[.data.result[] | select(.metric.service_version == $v)] | length' <<<"$SERVING")"
+LIVE="$(jq -r --arg v "$SHORT" '[.data.result[] | select(.metric.service_version | startswith($v))] | length' <<<"$SERVING")"
 
 echo "== taxa de respostas 5xx por serviço (últimos 10 min; o alerta dispara acima de 1%)"
 prom "(sum by (service_name) (rate(http_server_request_duration_seconds_count{service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\", http_response_status_code=~\"5..\"}[10m])) or sum by (service_name) (rate(http_server_request_duration_seconds_count{service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\"}[10m])) * 0) / sum by (service_name) (rate(http_server_request_duration_seconds_count{service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\"}[10m]))" \
@@ -58,7 +58,7 @@ loki "sum by (service_name, service_version) (count_over_time({service_name=~\"$
 echo "== erros mais frequentes da versão $SHORT (últimos 30 min, até 200 linhas)"
 NOW="$(date +%s)"
 grafana "/api/datasources/proxy/uid/$LOKI/loki/api/v1/query_range" \
-  --data-urlencode "query={service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\"} | detected_level=\"error\" | service_version=\"$SHORT\"" \
+  --data-urlencode "query={service_name=~\"$SERVICES\", deployment_environment_name=\"$ENVIRONMENT\"} | detected_level=\"error\" | service_version=~\"$SHORT.*\"" \
   --data-urlencode "start=$((NOW - 1800))000000000" --data-urlencode "end=${NOW}000000000" --data-urlencode 'limit=200' \
   | jq -r '[.data.result[].values[][1] | (. as $line | try (fromjson | (.message // .msg // .body // tostring)) catch $line) | tostring | .[0:140]] | if length == 0 then "nenhum" else (group_by(.) | map({n: length, m: .[0]}) | sort_by(-.n) | .[0:6][] | "\(.n)x \(.m)") end'
 
