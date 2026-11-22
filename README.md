@@ -89,6 +89,8 @@ skills/
 | **backend**  | `shared` + `backend`                | `vera-api`   |
 | **frontend** | `shared` + `frontend` + `interface` | `vera-fe`    |
 
+`prod-check` está em `shared` por decisão do card #82 (chega aos dois repos): no `vera-fe` ele confere só o pipeline e a saúde da API, como a própria skill explica.
+
 `vera-observability` não recebe skills (repositório sem aplicação rodando). Para adicionar repositórios ou grupos, edite `skills/sync-config.json`.
 
 ### `.claude/skills` no repositório destino é um espelho
