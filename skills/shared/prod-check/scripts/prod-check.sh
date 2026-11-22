@@ -63,7 +63,9 @@ grafana "/api/datasources/proxy/uid/$LOKI/loki/api/v1/query_range" \
   | jq -r '[.data.result[].values[][1] | (. as $line | try (fromjson | (.message // .msg // .body // tostring)) catch $line) | tostring | .[0:140]] | if length == 0 then "nenhum" else (group_by(.) | map({n: length, m: .[0]}) | sort_by(-.n) | .[0:6][] | "\(.n)x \(.m)") end'
 
 echo "== resultado"
-if [ "$LIVE" -gt 0 ]; then
+if [ -z "$SERVING" ] || ! jq -e '.data.result' >/dev/null 2>&1 <<<"$SERVING"; then
+  echo "a consulta de métricas falhou: não dá para dizer se a versão $SHORT está atendendo"
+elif [ "${LIVE:-0}" -gt 0 ]; then
   echo "a versão $SHORT está atendendo em $LIVE serviço(s)"
 else
   echo "a versão $SHORT ainda NÃO aparece atendendo: o deploy não terminou, falhou ou este repo não publica um serviço com métricas"

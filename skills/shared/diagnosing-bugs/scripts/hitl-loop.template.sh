@@ -31,6 +31,7 @@ capture() {
 
 # --- edit below ---------------------------------------------------------
 
+# Replace the URL with the real local port (local-dev skill) of the app under test.
 step "Open the app at http://localhost:3000 and sign in."
 
 capture ERRORED "Click the 'Export' button. Did it throw an error? (y/n)"

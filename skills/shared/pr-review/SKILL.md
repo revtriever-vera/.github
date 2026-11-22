@@ -273,7 +273,9 @@ basis:
 
 > **Nenhum achado.** Li o commit `3f9a2c1` contra o PRD e os 9 cards da milestone `fundacao`.
 
-No "LGTM", no summary of the change, no list of what you checked. Keep the whole comment under about
+No "LGTM", no summary of the change, no list of what you checked.
+
+The last line of the comment is the verdict the review workflow asks for (`VEREDITO: APROVADO` or `VEREDITO: MUDANÇAS NECESSÁRIAS`, defined in `claude-review.yml`): `MUDANÇAS NECESSÁRIAS` only when there is a blocking finding, `APROVADO` otherwise (notes do not block). Keep the whole comment under about
 400 words, repro code aside: the cap trims notes, never a blocking finding.
 
 **Write the comment itself in pt-BR**, in full sentences — the skill is English because it is how we
