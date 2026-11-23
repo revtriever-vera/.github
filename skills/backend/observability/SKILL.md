@@ -140,6 +140,18 @@ table — same rule as renaming one.
 | `bank-connections-sync-publish` | A synchronization request could not be queued (warn)                         | `connectionId`, `trigger`                                                 |
 | `bank-connections-sync-fanout` | Daily synchronization fan-out queued one job per synchronizable connection    | `connections`                                                             |
 | `bank-connections-sync`       | One connection synchronization finished, was skipped, refused (`company_mismatch`) or had an account fail | `connectionId`, `runId`, `trigger`, `status`, `accounts`, `fetched`, `inserted`, `updated`, `duplicates`, `skippedPending`, `durationMs`, `failureCode`, `reason`, `errorName` |
+| `integrations` | Integration credential saved, test failed, removed or unreadable (never the secret) | `kind`, `reason` |
+| `usage` | Paid usage meter: cap reached, recorded above the estimate, notice threshold crossed | `feature`, `task`, `period`, `estimateMicros`, `costMicros`, `kind` |
+| `usage-fx` | Paid usage fell back to the fallback USD rate | — |
+| `billing-engine` | One call to the billing engine finished, api key rejected, or fake event not delivered | `operation`, `outcome`, `latencyMs`, `status`, `problemType`, `eventType`, `reason` |
+| `plans-gate` | Premium feature denied by the plan gate | `feature`, `state` |
+| `plans-contract` | Premium contract opened or closed | `product`, `reason` |
+| `plans-lifecycle` | Premium ended: handlers ran, or one handler failed | `handlers`, `failed`, `handler` |
+| `fixed-income-schedule` | Schedule built with estimated rows because a reference rate is missing | `endpoint`, `cdiMissing`, `ipcaMissing` |
+| `fgc-coverage` | FGC coverage computed (debug) | `groups`, `overGroups`, `outside` |
+| `concentration` | Concentration computed (debug) | `groups`, `unmapped` |
+| `members-authz` | Member denied by role on a route | `route`, `required`, `role` |
+| `route-role-missing` | Write route declared without a required role (error) | `route` |
 
 `message` is static by rule, so it is a reliable filter — but it travels as the **log line**, not as
 structured metadata, so the filter is the line filter: ``|= `import failed` `` works
