@@ -15,10 +15,16 @@ O repositório é **público**, como toda a organização: nada aqui pode conter
 ├── ISSUE_TEMPLATE/       # PRD, feature, bug, tech debt, QA + links de contato
 ├── pull_request_template.md
 └── workflows/sync-skills.yml
+AGENTS.md                 # instruções de quem trabalha neste repo (CLAUDE.md é link)
+contract/                 # contrato de trabalho dos agentes + script que o injeta
 profile/README.md         # página da org (github.com/revtriever-vera)
 skills/                   # fonte de verdade das skills do Claude Code
 setup-project.sh          # prepara o project board da org
 ```
+
+## Contrato de trabalho
+
+`contract/CONTRACT.md` é o contrato que todo agente carrega: a cadeia de trabalho (como classificar o pedido, planejar, entregar e provar), onde ficam as skills e as paradas que esperam o mantenedor. A mesma Sync Skills o escreve, entre os marcadores `contract:start` e `contract:end`, no início do `AGENTS.md` de cada repositório destino (`contract/inject.sh <arquivo> [contrato]`, que também roda à mão). Se o repositório só tem `CLAUDE.md`, a sync o renomeia para `AGENTS.md` e deixa `CLAUDE.md` como link. Repositório sem `AGENTS.md` não recebe o bloco: o card do repositório cria o arquivo. Mude o contrato aqui, nunca dentro do bloco; o `dry_run` não o injeta.
 
 ## Skills: fonte única de verdade
 

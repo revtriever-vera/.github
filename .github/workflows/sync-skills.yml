@@ -213,13 +213,32 @@ jobs:
 
             git add -fA .claude/skills
 
+            # AGENTS.md é o arquivo de instruções dos clientes; CLAUDE.md fica como link
+            if [ -f CLAUDE.md ] && [ ! -L CLAUDE.md ] && { [ -L AGENTS.md ] || [ ! -e AGENTS.md ]; }; then
+              rm -f AGENTS.md
+              mv CLAUDE.md AGENTS.md
+              ln -s AGENTS.md CLAUDE.md
+              echo "  🔁 CLAUDE.md virou link para AGENTS.md"
+            fi
+
+            # contrato de trabalho: o mesmo bloco no início do AGENTS.md de cada repo
+            if [ -f AGENTS.md ] && [ ! -L AGENTS.md ]; then
+              if bash "$GITHUB_WORKSPACE/contract/inject.sh" AGENTS.md "$GITHUB_WORKSPACE/contract/CONTRACT.md"; then
+                git add -fA AGENTS.md
+                [ -e CLAUDE.md ] && git add -fA CLAUDE.md
+              else
+                echo "  ❌ contrato não aplicado"
+                FAILED=$((FAILED + 1)); cd "$GITHUB_WORKSPACE"; rm -rf "$TMPDIR"; continue
+              fi
+            fi
+
             if git diff --cached --quiet; then
               echo "  ✅ já está atualizado"
               UNCHANGED=$((UNCHANGED + 1))
               cd "$GITHUB_WORKSPACE"; rm -rf "$TMPDIR"; continue
             fi
 
-            git commit -q -m "chore: sync skills from .github [${FOLDERS[*]}]"
+            git commit -q -m "chore: sync skills and contract from .github [${FOLDERS[*]}]"
 
             if git_auth push origin "$BRANCH" 2>&1; then
               echo "  🚀 synced"
