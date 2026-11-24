@@ -73,3 +73,11 @@ npm run start:dev
 
 `seed:dev` is idempotent — safe to re-run. It seeds ONLY local-obvious data (company "Dev Corp",
 user dev@vera.local) and refuses to run when NODE_ENV=production.
+
+## Verify the whole CI locally
+
+`npm run ci:local` (`scripts/ci-local.sh`) runs the same steps as the `verify` job of `ci.yml`
+(format, lint, typecheck, migration names, drift guard, unit, integration, 85% coverage gate),
+fails on the first error and prints a summary. The drift guard starts a throwaway Postgres on a
+free port and removes it on exit. It is the whole suite: heavy, run it before a big change set,
+not on every edit. Keep it in sync when `ci.yml` gains or loses a step.
